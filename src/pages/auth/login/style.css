@@ -1,0 +1,48 @@
+.container {
+    height:max-content;
+    padding-top: 10em;
+    padding-left:17em;
+    padding-right: 12em;    
+    display: flex;
+
+}
+
+.subcontainer {
+    max-width: 40em;
+    flex:1;
+    display: flexbox;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    max-width: 25em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.inputField {
+    padding-top: 1em;
+}
+
+.login-button {
+    padding-top: 2em;
+    max-width: 25em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.forgot-account {
+    padding-top: 2em;
+    padding-left: 2em;
+}
+.create-account {
+    padding-top: 7em;
+    padding-left: 2em;
+    padding-bottom: 1em;
+}
+
+.link:hover{
+    font-weight: bolder;
+}

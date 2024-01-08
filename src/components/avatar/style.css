@@ -1,0 +1,12 @@
+.avatar {
+    height: 25em;
+    width: 15em;
+    border: 2px black solid;
+    
+}
+
+#image{
+    object-fit: contain;
+    height: 25em;
+    width: 15em;
+}
