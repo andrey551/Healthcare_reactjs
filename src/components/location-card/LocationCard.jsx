@@ -1,7 +1,13 @@
 import { Box, Button, Card, CardMedia, Rating, Typography } from '@mui/material';
 import React from 'react'
-
+import { parseTime, roundFLoat } from '../../utils/utils';
+import { useNavigate } from 'react-router-dom';
 const LocationCard = (prop) => {
+    const navigate = useNavigate();
+    const onDetail = (prop) => {
+        navigate(`location/detail`)
+    }
+
     return(
         <>
             <Card sx={{display:'flex', width: '42em', height: '13em', backgroundColor: '#a7f2c5', border: "2px black dashed"}}>
@@ -15,16 +21,17 @@ const LocationCard = (prop) => {
                             <Typography variant='h5'>{prop.location.name}</Typography>
                         </Box>
                         <Box>
-                            <Typography variant='subtitle2'>Address: {prop.location.address}</Typography>
-                            <Typography variant='subtitle2'>Open: {prop.location.open} AM  - {prop.location.close} PM</Typography>
+                            <Typography variant='subtitle2' sx={{maxWidth: '25em'}}>Address: {prop.location.address}</Typography>
+                            
+                            <Typography variant='subtitle2'>Open: {parseTime(prop.location.open)}  - {parseTime(prop.location.close)}</Typography>
                             <Typography variant='subtitle2'>
-                                Rating: {prop.location.rating} ({prop.location.number_of_rating})
+                                Rating: {roundFLoat(prop.location.rating)} ({prop.location.passengers})
                             </Typography>
                             <Rating value={prop.location.rating} size="small" readOnly/>
                         </Box>
                     </Box>
                     <Box sx= {{display: 'flex',  alignItems: 'flex-end', paddingBottom: '1em'}}>
-                        <Button sx={{display: 'flex', justifyContent: 'flex-end'}} variant='contained'>Detail</Button>
+                        <Button sx={{display: 'flex', justifyContent: 'flex-end'}} onClick={onDetail} variant='contained'>Detail</Button>
                     </Box>
                 </Box>
 

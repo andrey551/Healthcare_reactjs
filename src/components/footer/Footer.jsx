@@ -4,7 +4,7 @@ import "../footer/style.css"
 const Footer= () => {
     return (
         <>
-        <div class = "footer-container">
+        <div class = "footer-container-ft">
             <div class = "info">
                 <p>@ITMO_University</p>
                 <p>Software Engineering Faculty</p>
@@ -20,7 +20,7 @@ const Footer= () => {
                 </div>
             </div>
         </div>
-        <div class = "right">
+        <div class = "right-ft">
             <p>@2023  All Rights Reserved</p>
         </div>
         </>

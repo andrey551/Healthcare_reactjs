@@ -1,94 +1,42 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
-import { Map, Panorama, SearchControl, YMaps } from '@pbe/react-yandex-maps';
-import { Placemark } from '@pbe/react-yandex-maps';
+import { GeolocationControl, Map, SearchControl, YMaps } from '@pbe/react-yandex-maps';
+import { Placemark} from '@pbe/react-yandex-maps';
 import React, { useEffect, useState } from 'react';
 import LocationCard from '../../components/location-card/LocationCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLocation } from '../../hooks/modules/location';
 
 
 const YandexMap = () => {
-    const [location, setLocation] = useState('Hospital');
-    const [target, setTarget] = useState('Near By')
+    const dispatch = useDispatch();
+    const [type, setType] = useState('');
+    const [target, setTarget] = useState('')
 
     const handleLocation = (event) => {
-        setLocation(event.target.value);
+        setType(event.target.value);
     };
 
     const handleTarget = (event) =>{
         setTarget(event.target.value);
     }
 
-    const data = [
-        {
-            type: 'hospital',
-            name: "Поликлиника № 83",
-            address: "Bolshoy Prospekt, 10, St Petersburg, 197198",
-            open: '8:00',
-            close: '21:00',
-            Telephone: '88127700083',
-            rating: 3.8,
-            number_of_rating: 68
-          },
-          {
-            type: 'hospital',
-            name: "Городская поликлиника № 34",
-            address: "Zverinskaya Ulitsa, 15, St Petersburg, 197198",
-            open: '9:00',
-            close: '20:00',
-            Telephone: '88122467350',
-            rating: 3.2,
-            number_of_rating: 74
-          },
-          {
-            type: 'hospital',
-            name: "Поликлиника № 30, детское поликлиническое отделение № 14",
-            address: "Malyy Prospekt P.s., 15, St Petersburg, 197110",
-            open: '8:00',
-            close: '20:00',
-            Telephone: '88122467418',
-            rating: 2.9,
-            number_of_rating: 48
-          },
-          {
-            type: 'hospital',
-            name: "При Поликлинике № 83 Стоматологическое Отделение",
-            address: "Bolshoy Prospekt, 8, St Petersburg, 197198",
-            open: '8:00',
-            close: '21:00',
-            Telephone: '88127700083',
-            rating: 3.8,
-            number_of_rating: 68
-          },
-          {
-            type: 'hospital',
-            name: "Поликлиника № 83",
-            address: "Bolshoy Prospekt, 10, St Petersburg, 197198",
-            open: '8:00',
-            close: '21:00',
-            Telephone: '88122358285',
-            rating: 5.0,
-            number_of_rating: 0
-          },
-          {
-            type: 'hospital',
-            name: "Городская Поликлиника №3. Отделение врача",
-            address: "Naberezhnaya Reki Smolenki, 3, St Petersburg, 199178",
-            open: '8:00',
-            close: '21:00',
-            Telephone: '88123847420',
-            rating: 3.0,
-            number_of_rating: 8
-          },
-          {
-            type: 'hospital',
-            name: "СПб ГБУЗ «Городская поликлиника №3» ОВОП",
-            address: "Naberezhnaya Reki Smolenki, 3, St Petersburg, 199178",
-            open: '8:00',
-            close: '20:00',
-            Telephone: '88127700083',
-            rating: 2.7,
-            number_of_rating: 66
-          }
-    ]
+    const filterOnSubmit = () => {
+        dispatch(getLocation({type, target}));
+    }
+
+    const [hintVisible, setHintVisible] = useState(false);
+    const [hintContent, setHintContent] = useState('');
+  
+    const handleMouseEnter = (content) => {
+      setHintContent(content);
+      setHintVisible(true);
+    };
+  
+    const handleMouseLeave = () => {
+      setHintVisible(false);
+    };
+
+    const data = useSelector((state => state.location.locations))
     return(
         <>
             <Box sx={{display: 'flex', flexDirection: 'row'}}>
@@ -96,8 +44,17 @@ const YandexMap = () => {
                     <Box sx = {{border: '2px green dashed', width: '25em', height: '25em'}}>
                         <YMaps >
                             <Map width={'25em'} height={'25em'} defaultState={{center: [59.9, 30.7], zoom: 9}}>
-                                <Placemark defaultGeometry={[59.9, 30.7]} />
+                                {data.map(loc => {
+                                    return (
+                                        <Placemark 
+                                        geometry={[loc.longitude, loc.latitude]} 
+                                        />
+                                    )
+                                })}
+                                
                                 <SearchControl options={{ float: "right" }} />
+                                
+                                <GeolocationControl options={{ float: "left" }} events={{onclick : (e) => {console.log(e.originalEvent.map.getCenter())}}}  />
                             </Map>
                         </YMaps>
                     </Box>
@@ -108,7 +65,7 @@ const YandexMap = () => {
                             <FormControl fullWidth>
                                 <InputLabel>Location</InputLabel>
                                 <Select
-                                value={location}
+                                value={type}
                                 label='Location'
                                 onChange={handleLocation}
                                 >
@@ -135,7 +92,7 @@ const YandexMap = () => {
                             </FormControl>
                         </Box>
                         <Box sx= {{display: 'flex', justifyContent: 'end', paddingTop: '1em'}}>
-                            <Button variant='contained'>Search</Button>
+                            <Button onClick={filterOnSubmit} variant='contained'>Search</Button>
                         </Box>
                     </Box>
 
