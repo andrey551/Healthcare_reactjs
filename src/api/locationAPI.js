@@ -19,6 +19,15 @@ const locationAPI = {
         let type = (req.type == "Hospital" ? "hospital" : "store")
         let target = (req.target == 'Near By' ? "nearby" : "visited")
         return axiosInstance.post('/filter', {type, target}, {})
+    },
+    async loadComment(token,  coors) {
+        return axiosInstance.post('/getComment', coors, {})
+    },
+    async addComment(token, coor, comment) {
+        return axiosInstance.post('/addComment', {coor, comment}, {})
+    },
+    async loadDepartment(token, coors) {
+        return axiosInstance.post('/getDepartment', coors, {});
     }
 }
 

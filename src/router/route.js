@@ -17,12 +17,6 @@ const router = createBrowserRouter([
     {
         path: "/location",
         element: <LocationPage/>,
-        children: [
-            {
-                path: "detail",
-                element: <DetailPage />
-            }
-        ]
     },
     {
         path: "/chat",
@@ -31,6 +25,10 @@ const router = createBrowserRouter([
     {
         path: "/account",
         element: <AccountPage/>
+    },
+    {
+        path: "/detail",
+        element: <DetailPage/>
     }
 ])
 

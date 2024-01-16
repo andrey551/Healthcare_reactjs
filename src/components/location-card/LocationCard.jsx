@@ -2,10 +2,14 @@ import { Box, Button, Card, CardMedia, Rating, Typography } from '@mui/material'
 import React from 'react'
 import { parseTime, roundFLoat } from '../../utils/utils';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch} from 'react-redux';
+import { setDetail } from '../../hooks/modules/location';
 const LocationCard = (prop) => {
     const navigate = useNavigate();
-    const onDetail = (prop) => {
-        navigate(`location/detail`)
+    const dispatch = useDispatch();
+    const onDetail = () => {
+        dispatch(setDetail(prop.location))
+        navigate('/detail')
     }
 
     return(

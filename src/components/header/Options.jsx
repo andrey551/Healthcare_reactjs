@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import "../header/style.css"
 import {useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material';
@@ -7,7 +7,7 @@ const Options = () => {
     const options = [
             {title: "Analysis", url : "/home"},
             {title: "Location", url: "/location"},
-            {title: "Chat", url : "/chat"},
+            // {title: "Chat", url : "/chat"},
             {title: "Account", url : "/account"}];
         
             const navigate = useNavigate();
