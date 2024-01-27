@@ -1,18 +1,16 @@
 import { Alert, Avatar, Box, Button, Link, Modal, Rating, Snackbar, TextField, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
+
 import React, { useEffect, useState } from 'react'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import Comment from '../../components/comment/Comment';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useDispatch, useSelector } from 'react-redux';
 import { addComment, loadComment, loadDepartment } from '../../hooks/modules/location';
 import { parseTime, roundFLoat } from '../../utils/utils';
+import Scheduler from '../../components/scheduler/scheduler';
 
 
 const style = {
@@ -37,8 +35,9 @@ const LocationDetail = () => {
 
     useEffect(() => {
         dispatch(loadComment());
-        dispatch(loadDepartment())
+        dispatch(loadDepartment());
     }, [])
+    console.log(list_Department)
 
     // modal
     const handleOpen = () => setOpenModal(true);
@@ -105,33 +104,7 @@ const LocationDetail = () => {
                                         {list_Department.map((value, index) => {
                                             return(
                                                 <>
-                                                <Box key={index}>
-                                                <Accordion>
-                                                    <AccordionSummary
-                                                        expandIcon={<ExpandMoreIcon/>}
-                                                    >
-                                                        <Typography>{value}</Typography>
-                                                    </AccordionSummary>
-                                                    <AccordionDetails>
-                                                        <Box><Typography variant='h6'>Set schedule</Typography></Box>
-                                                        <Box sx ={{display: 'flex', flexDirection: 'row'}}>
-                                                            
-                                                                <Box sx={{padding: '1em'}}>
-                                                                    Time: <TimePicker/>
-                                                                </Box>
-                                                                <Box sx={{padding: '1em'}}>
-                                                                    Date: <DatePicker/>
-                                                                </Box>
-                                                            
-                                                            <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-                                                                <Button onClick={confirmSchedule}>Confirm</Button>
-                                                            </Box>
-                                                        
-                                                        </Box>
-
-                                                    </AccordionDetails>
-                                                </Accordion>
-                                                </Box>
+                                                    <Scheduler department = {value} hospital_id={location.id}/>
                                                 </>
                                             )
                                         })}

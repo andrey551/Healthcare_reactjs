@@ -176,7 +176,29 @@ export const loadDepartment = () =>(dispatch, getState) => {
     locationAPI.loadDepartment(JSON.parse(localStorage.getItem('tad')), coor)
     .then(response => {
         if(response.status === 200) {
-            console.log('Load Department!');
+            dispatch(setDepartment(response.data))
+        }
+        else {
+            console.log(`unexpected response ${response.status} from server`);
+        }
+    })
+    .catch(err => {
+        console.log(err)
+        if(err.status == 401) {
+            dispatch(logout());
+        } else {
+            console.log(`unexpected error ${err.status} from server`)
+        }
+    })
+    dispatch(setLoading(false))
+}
+
+export const addSchedule = (time, department_id, hospital_id) =>(dispatch) => {
+    dispatch(setLoading(true));
+    locationAPI.addSchedule(JSON.parse(localStorage.getItem('tad')), time, department_id, hospital_id)
+    .then(response => {
+        if(response.status === 200) {
+            alert('Appointment scheduled!')
         }
         else {
             console.log(`unexpected response ${response.status} from server`);

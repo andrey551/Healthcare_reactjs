@@ -8,8 +8,9 @@ const authAPI = {
         return await axiosInstance.post('login', {username, password})
     },
 
-    async register(username, password) {
-        return await axiosInstance.post('register', {username, password})
+    async register(account, user) {
+
+        return await axiosInstance.post('register', {account: account, user: user})
     }
 }
 

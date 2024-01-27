@@ -28,6 +28,9 @@ const locationAPI = {
     },
     async loadDepartment(token, coors) {
         return axiosInstance.post('/getDepartment', coors, {});
+    },
+    async addSchedule(token, time, department_id, hospital_id) {
+        return axiosInstance.post('/addScheduler', {hospital_id, department_id, time}, {})
     }
 }
 

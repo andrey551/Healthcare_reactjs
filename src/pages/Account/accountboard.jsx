@@ -6,37 +6,62 @@ import WalletIcon from '@mui/icons-material/Wallet';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css'
+import { useDispatch, useSelector } from 'react-redux';
+import { getWallet, updatePassword, updateUser, updateWalletdisp } from '../../hooks/modules/profile';
+import { redirect, useNavigate } from 'react-router-dom';
 
-const user = {
-    Name: "Dau Cong Tuan Anh",
-    avatar: 'https://upload.wikimedia.org/wikipedia/ru/e/e5/Itachi_Uchiha.jpg',
-    Age: 23,
-    Height: 167,
-    Telephone: "0348674655",
-    Address: "Vyazemsky Ln, 5/7 Sankt-Peterburg",
-    last_checked: "Today",
-    wallet:{
-        balance: '10600',
-        unit: 'RUB',
-        payment: {
-            name: 'DAU CONG TUAN ANH',
-            card_number: '245845584254',
-            cvv: '106',
-            YYMM: '05/25',
-        }
-    }
-}
+// const user = {
+//     Name: "Dau Cong Tuan Anh",
+//     avatar: 'https://upload.wikimedia.org/wikipedia/ru/e/e5/Itachi_Uchiha.jpg',
+//     Age: 23,
+//     Height: 167,
+//     Telephone: "0348674655",
+//     Address: "Vyazemsky Ln, 5/7 Sankt-Peterburg",
+//     last_checked: "Today",
+//     wallet:{
+//         balance: '10600',
+//         unit: 'RUB',
+//         payment: {
+//             name: 'DAU CONG TUAN ANH',
+//             card_number: '2458455842542415',
+//             cvv: '106',
+//             YYMM: '05/25',
+//         }
+//     }
+// }
 const AccountBoard = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    useEffect(() => {
+        dispatch(getWallet())
+    }, [])
+    const user = useSelector((state => state.user.user))
     const [personal, setPersonal] = useState(false);
     const [password, setPassword] = useState(false);
     const [wallet, setWallet] = useState(false);
-
+    const defWallet = useSelector((state => state.profile.wallet))
+    console.log(defWallet)
     const [card, setCard] = useState({
-        name: 'DAU CONG TUAN ANH',
-        card_number: '245845584254',
-        cvc: '106',
-        YYMM: '0525',
+        name: defWallet.name,
+        balance: defWallet.balance,
+        unit: defWallet.unit,
+        card_number: defWallet.card_number,
+        cvc: defWallet.cvv,
+        YYMM: defWallet.mmyy,
         focus: ''
+    })
+
+    const [newUser, setNewUser]  = useState({
+        name: user.name,
+        age: user.age,
+        telephone: user.telephone,
+        address : user.address
+    })
+
+    const [newPassword, setNewPassword] = useState({
+        oldPassword: '',
+        newPassword: '',
+        confirm: ''
     })
 
     const handleInputChange = (evt) => {
@@ -48,6 +73,16 @@ const AccountBoard = () => {
     
       const handleInputFocus = (evt) => {
         setCard((prev) => ({ ...prev, focus: evt.target.name }));
+      }
+      const handleUserFocus = (evt) => {
+        const {name, value} = evt.target
+        if(name == 'age') setNewUser((prev) => ({...prev, [name]: Number.parseInt(value)}))
+        else setNewUser((prev) => ({...prev, [name]: value}))
+      }
+
+      const handlePasswordChange = (evt) => {
+        const {name, value} = evt.target
+        setNewPassword((prev) => ({...prev, [name]: value}))
       }
     
     function openPersonal() {
@@ -70,6 +105,24 @@ const AccountBoard = () => {
     function closeWallet() {
         setWallet(false)
     }
+
+    function confirmChangeUser() {
+        dispatch(updateUser({newUser}))
+    }
+
+    function confirmChangePassword() {
+        dispatch(updatePassword({newPassword}))
+    }
+
+    function confirmChangeWallet() {
+        console.log(card)
+        dispatch(updateWalletdisp({nameOnCard: card.name, card_number: card.card_number, cvv: card.cvc, mmyy: card.YYMM}))
+    }
+
+    const logout = () => {
+        // localStorage.removeItem('tad');
+        // navigate('/')
+    }
     return(
         <>
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
@@ -79,11 +132,11 @@ const AccountBoard = () => {
                             <img src={user.avatar} width={'250em'} height={'350em'} />
                         </Box>
                         <Box sx={{paddingLeft: '2em', width: '30em'}}>
-                            <Typography variant='h6'><b>Full name: </b> {user.Name}</Typography>
-                            <Typography variant='h6'><b>Age: </b> {user.Age}</Typography>
-                            <Typography variant='h6'><b>Telephone: </b> {user.Telephone}</Typography>
-                            <Typography variant='h6'><b>Address: </b> {user.Address}</Typography>
-                            <Typography variant='h6'><b>Last checked: </b> {user.last_checked}</Typography>
+                            <Typography variant='h6'><b>Full name: </b> {user.name}</Typography>
+                            <Typography variant='h6'><b>Age: </b> {user.age}</Typography>
+                            <Typography variant='h6'><b>Telephone: </b> {user.telephone}</Typography>
+                            <Typography variant='h6'><b>Address: </b> {user.address}</Typography>
+                            {/* <Typography variant='h6'><b>Last checked: </b> {user.last_checked}</Typography> */}
                         </Box>
                     </Box>
                 </Box>
@@ -115,7 +168,7 @@ const AccountBoard = () => {
                                 </ListItemButton>
                             </ListItem>
                             <ListItem>
-                                <ListItemButton>
+                                <ListItemButton onClick={logout()}>
                                     <ListItemIcon>
                                         <LogoutIcon/>
                                     </ListItemIcon>
@@ -135,24 +188,28 @@ const AccountBoard = () => {
                             <Typography sx={{marginLeft: '2em', marginTop: '0.5em'}} variant='h5'>Information</Typography>
                                 <Box sx={{display: 'flex', flexDirection: 'row', margin: '1em', paddingLeft: '2em', marginTop: '2em'}}>
                                     <Typography sx={{paddingTop: '8px', paddingRight: '10px'}} variant='body2'><b>Fullname</b></Typography>
-                                    <Input placeholder={user.Name}/>
+                                    <Input name ='name' value={newUser.name} onChange={(e) => {
+                                        handleUserFocus(e)
+                                    }} placeholder={user.name}/>
                                 </Box>
                                 <Box sx={{display: 'flex', flexDirection: 'row', margin: '1em', paddingLeft: '2em'}}>
                                     <Typography sx={{paddingTop: '8px', paddingRight: '10px'}} variant='body2'><b>Age</b></Typography>
-                                    <Input placeholder={user.Age}/>
+                                    <Input name = 'age' value = {newUser.age} onChange={(e) => {
+                                        handleUserFocus(e)
+                                    }} placeholder={user.age}/>
                                 </Box>
                                 <Box sx={{display: 'flex', flexDirection: 'row', margin: '1em', paddingLeft: '2em'}}>
                                     <Typography sx={{paddingTop: '8px', paddingRight: '10px'}} variant='body2'><b>Telephone</b></Typography>
-                                    <Input placeholder={user.Telephone}/>
+                                    <Input name = 'telephone' value={newUser.telephone} onChange={(e) => {handleUserFocus(e)}} placeholder={user.telephone}/>
                                 </Box>
                                 <Box sx={{display: 'flex', flexDirection: 'row', margin: '1em', paddingLeft: '2em'}}>
                                     <Typography sx={{paddingTop: '8px', paddingRight: '10px'}} variant='body2'><b>Address</b></Typography>
-                                    <Input placeholder={user.Address}/>
+                                    <Input name = 'address' value={newUser.address} onChange={(e) => {handleUserFocus(e)}} placeholder={user.address}/>
                                 </Box>
                                 <Box sx={{display:'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
                                     <Box sx={{marginRight: '3em'}}>
                                         <Button onClick={closePersonal} color='error' sx={{marginRight: '2em'}} variant='outlined' >Quit</Button>
-                                        <Button onClick={closePersonal} color='success' variant='outlined'>Save</Button>
+                                        <Button onClick={confirmChangeUser} color='success' variant='outlined'>Save</Button>
                                     </Box>
                                 </Box>
                             </Box>
@@ -172,20 +229,20 @@ const AccountBoard = () => {
                             <Typography sx={{marginLeft: '2em', marginTop: '0.5em'}} variant='h5'>Password</Typography>
                                 <Box sx={{display: 'flex', flexDirection: 'row', margin: '1em', paddingLeft: '2em', marginTop: '2em'}}>
                                     <Typography sx={{paddingTop: '8px', paddingRight: '10px'}} variant='body2'><b>Old password</b></Typography>
-                                    <Input type='password'/>
+                                    <Input name = 'oldPassword' value = {newPassword.oldPassword} onChange={(e) => {setNewPassword(e)}} type='password'/>
                                 </Box>
                                 <Box sx={{display: 'flex', flexDirection: 'row', margin: '1em', paddingLeft: '2em'}}>
                                     <Typography sx={{paddingTop: '8px', paddingRight: '10px'}} variant='body2'><b>New password</b></Typography>
-                                    <Input type='password'/>
+                                    <Input name = 'newPassword' value = {newPassword.oldPassword} onChange={(e) => {setNewPassword(e)}} type='password'/>
                                 </Box>
                                 <Box sx={{display: 'flex', flexDirection: 'row', margin: '1em', paddingLeft: '2em'}}>
                                     <Typography sx={{paddingTop: '8px', paddingRight: '10px'}} variant='body2'><b>Re-type new password: </b></Typography>
-                                    <Input type='password'/>
+                                    <Input name = 'confirm' value = {newPassword.oldPassword} onChange={(e) => {setNewPassword(e)}} type='password'/>
                                 </Box>
                                 <Box sx={{display:'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
                                     <Box sx={{marginRight: '3em'}}>
                                         <Button onClick={closePassword} color='error' sx={{marginRight: '2em'}} variant='outlined' >Quit</Button>
-                                        <Button onClick={closePassword} color='success' variant='outlined'>Save</Button>
+                                        <Button onClick={confirmChangePassword} color='success' variant='outlined'>Save</Button>
                                     </Box>
                                 </Box>
                             </Box>
@@ -202,7 +259,7 @@ const AccountBoard = () => {
                             <Box sx={{ width: '30em', height: '35em', backgroundColor: 'white', border: '1px gray solid' }}>
                             <Typography sx={{marginLeft: '2em', marginTop: '0.5em'}} variant='h5'>Wallet</Typography>
                                 <Box sx={{display: 'flex', flexDirection: 'row', margin: '1em', paddingLeft: '2em'}}>
-                                    <Typography sx={{paddingTop: '8px', paddingRight: '10px'}} variant='body2'><b>Balance: </b>{user.wallet.balance} {user.wallet.unit}</Typography>
+                                    <Typography sx={{paddingTop: '8px', paddingRight: '10px'}} variant='body2'><b>Balance: </b>{card.balance} {card.unit}</Typography>
                                 </Box>
                                 <Cards
                                     cvc={card.cvc}
@@ -230,7 +287,7 @@ const AccountBoard = () => {
                                 <Box sx={{display:'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
                                     <Box sx={{marginRight: '3em', marginTop: '1em'}}>
                                         <Button onClick={closeWallet} color='error' sx={{marginRight: '2em'}} variant='outlined' >Quit</Button>
-                                        <Button onClick={closeWallet} color='success' variant='outlined'>Save</Button>
+                                        <Button onClick={confirmChangeWallet} color='success' variant='outlined'>Save</Button>
                                     </Box>
                                 </Box>
                             </Box>

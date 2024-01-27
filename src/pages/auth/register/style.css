@@ -1,6 +1,6 @@
 .container {
     height:max-content;
-    padding-top: 10em;
+    padding-top: 5em;
     padding-left:17em;
     padding-right: 12em;    
     display: flex;
@@ -35,4 +35,19 @@
 
 .link:hover{
     font-weight: bolder;
+}
+
+.inner-form {
+    display: flex;
+    flex-direction: row;
+    width: max-content;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+}
+
+.login{
+    padding-right: 10em;
 }

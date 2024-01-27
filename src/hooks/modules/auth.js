@@ -93,14 +93,13 @@ export const login = (username, password) => (dispatch, getState) => {
         })
 }
 
-export const register = (username, password) => (dispatch) => {
+export const register = (account, user) => (dispatch) => {
     dispatch(setLoading(true));
-    authAPI.register(username, password)
+    authAPI.register(account, user)
       .then(response => {
-  
         if (response.status === 200) {
           localStorage.setItem('tad', JSON.stringify(response.data));
-          dispatch(login(username, password));
+          dispatch(login(account.username, account.password));
         } else {
           alert(`Unexpected response ${response.status} from server!`);
         }

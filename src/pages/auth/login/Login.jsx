@@ -5,13 +5,14 @@ import "../login/style.css"
 import "../../../assets/logo.png"
 import { useState } from "react";
 import {login} from "../../../hooks/modules/auth";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Login = () =>{
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const handleLoginSubmit = () => {
         dispatch(login(username, password))
@@ -68,7 +69,7 @@ const Login = () =>{
                             </div>
                         </div>
                         <div class = "create-account">
-                            <div class = "link">Create your account</div>
+                            <div onClick={()=> {navigate('/register')}} class = "link">Create your account</div>
                         </div>
                     </div>
 
